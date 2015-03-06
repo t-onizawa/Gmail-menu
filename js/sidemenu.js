@@ -1,5 +1,5 @@
 /* @license slidemenuJS v1.0.0
- * (c) 2014 t-onizawa https://github.org/t-onizawa/
+ * (c) 2014 t-onizawa https://github.com/t-onizawa/
 */
 
 
@@ -226,7 +226,6 @@ SIDE_MENU.INNER_SCROLL = function(options) {
 
 		$.setTranslate(target, 0, moveNum, 'id');
 
-		console.log(moveNum);
 	}
 
 	function flickEnd() {
@@ -258,7 +257,7 @@ SIDE_MENU.INNER_SCROLL = function(options) {
 	// RUN
 	(function() {
 		var resizeTimer,
-				interval = 300;
+			interval = 300;
 
 		window.addEventListener('resize', function () {
 			if (resizeTimer !== false) {
