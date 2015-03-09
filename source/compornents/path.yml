@@ -1,0 +1,18 @@
+## base = baseパス
+## dest = destパス
+
+css:    # css
+  base: '../scss/'
+  dest: '../../css/'
+
+js:     # javascript
+  base: '../javascripts/**/*.js'
+  dest: '../../js/'
+
+img:    # image min
+  base: '../images/*'
+  dest: '../../img/'
+
+sprite: # image sprite
+  base: '../images/sprite/*.png'
+  dest: '../../img/'
