@@ -2,8 +2,7 @@
  * (c) 2014 t-onizawa https://github.com/t-onizawa/
 */
 
-
-var SIDE_MENU = window.MODULE || {};
+var SIDE_MENU = window.SIDE_MENU || {};
 
 SIDE_MENU.CLASS_NAME = {
 	HIDE: 'is-hide',
@@ -11,19 +10,20 @@ SIDE_MENU.CLASS_NAME = {
 	TRANSITION: 'is-transition'
 };
 
-SIDE_MENU.METHOD = function() {
+SIDE_MENU.MODULE = function() {
+	'use strict';
 
 	function addClass(elm, cls) {
 		var list = elm.className.split(' ');
 
-		if (list.indexOf(cls) == -1) list[list.length] = cls;
+		if (list.indexOf(cls) === -1) { list[list.length] = cls; }
 		elm.className = list.join(' ');
 	}
 
 	function removeClass(elm, cls) {
 		var list = elm.className.split(' ');
 
-		if (list.indexOf(cls) !== -1) list.splice(list.indexOf(cls), 1);
+		if (list.indexOf(cls) !== -1) { list.splice(list.indexOf(cls), 1); }
 
 		elm.className = (list.length > 1) ? list.join(' ') : list[0] || '';
 	}
@@ -70,15 +70,17 @@ SIDE_MENU.METHOD = function() {
 	};
 };
 
-SIDE_MENU.MODULE = function(options) {
-	var $ = new SIDE_MENU.METHOD(),
-			container = document.getElementById(options.mainId),
-			target = container.getElementsByClassName(options.slideCls),
-			menu = document.getElementById(options.menuId),
-			btn = document.getElementById(options.btnId),
-			position = {},
-			flickFlag = false,
-			currentX = 0;
+SIDE_MENU.METHOD = function(options) {
+	'use strict';
+
+	var $ = new SIDE_MENU.MODULE(),
+		container = document.getElementById(options.mainId),
+		target = container.getElementsByClassName(options.slideCls),
+		menu = document.getElementById(options.menuId),
+		btn = document.getElementById(options.btnId),
+		position = {},
+		flickFlag = false,
+		currentX = 0;
 
 	function toggle() {
 		if (!$.hasClass(container, SIDE_MENU.CLASS_NAME.OPEN)) {
@@ -109,7 +111,6 @@ SIDE_MENU.MODULE = function(options) {
 	}
 
 	function noScroll() {
-
 		document.addEventListener('touchmove', function(e) {
 			var ev = new CustomEvent('noScroll', {
 				detail: {
@@ -128,7 +129,7 @@ SIDE_MENU.MODULE = function(options) {
 
 
 	function setPositionStart(e) {
-		if (!$.hasClass(container, SIDE_MENU.CLASS_NAME.OPEN)) return;
+		if (!$.hasClass(container, SIDE_MENU.CLASS_NAME.OPEN)) { return; }
 
 		flickFlag = true;
 		currentX = parseInt(target[0].getBoundingClientRect().left);
@@ -136,7 +137,7 @@ SIDE_MENU.MODULE = function(options) {
 	}
 
 	function setPositionMove(e) {
-		if (!$.hasClass(container, SIDE_MENU.CLASS_NAME.OPEN)) return;
+		if (!$.hasClass(container, SIDE_MENU.CLASS_NAME.OPEN)) { return; }
 
 		flickFlag = true;
 		position.move = e.changedTouches[0].screenX;
@@ -144,7 +145,7 @@ SIDE_MENU.MODULE = function(options) {
 	}
 
 	function setPositionEnd(e) {
-		if (parseInt(target[0].getBoundingClientRect().left) === 0) return;
+		if (parseInt(target[0].getBoundingClientRect().left) === 0) { return; }
 
 		flickFlag = false;
 		position.end = e.changedTouches[0].screenX;
@@ -152,7 +153,7 @@ SIDE_MENU.MODULE = function(options) {
 	}
 
 	function flick() {
-		if (!flickFlag) return;
+		if (!flickFlag) { return; }
 
 		var currentMove = parseInt(position.move - position.start),
 				moveNum = currentX + currentMove;
@@ -182,11 +183,14 @@ SIDE_MENU.MODULE = function(options) {
 };
 
 SIDE_MENU.INNER_SCROLL = function(options) {
-	var $ = new SIDE_MENU.METHOD(),
-			target = document.getElementById(options.scrollId),
-			headerHeight = (options.fixHeaderHeight) ? options.fixHeaderHeight : 0,
-			position = {},
-			windowHeight;
+	'use strict';
+
+	var $ = new SIDE_MENU.MODULE(),
+		target = document.getElementById(options.scrollId),
+		headerHeight = (options.fixHeaderHeight) ? options.fixHeaderHeight : 0,
+		position = {},
+		windowHeight,
+		currentY = 0;
 
 	function setWindowHeight() {
 		windowHeight = window.innerHeight;
@@ -197,7 +201,7 @@ SIDE_MENU.INNER_SCROLL = function(options) {
 	}
 
 	function setPositionStart(e) {
-		if (!getRunFlag()) return;
+		if (!getRunFlag()) { return; }
 
 		currentY = parseInt(target.getBoundingClientRect().top);
 		position.start = e.touches[0].screenY;
@@ -205,14 +209,14 @@ SIDE_MENU.INNER_SCROLL = function(options) {
 	}
 
 	function setPositionMove(e) {
-		if (!getRunFlag()) return;
+		if (!getRunFlag()) { return; }
 
 		position.move = e.changedTouches[0].screenY;
 		flick();
 	}
 
 	function setPositionEnd(e) {
-		if (!getRunFlag()) return;
+		if (!getRunFlag()) { return; }
 
 		position.end = e.changedTouches[0].screenY;
 		position.endTime = new Date().getTime();
@@ -220,24 +224,20 @@ SIDE_MENU.INNER_SCROLL = function(options) {
 	}
 
 	function flick() {
-
 		var currentMove = parseInt(position.move - position.start),
-				moveNum = currentY + currentMove;
+			moveNum = currentY + currentMove;
 
 		$.setTranslate(target, 0, moveNum, 'id');
-
 	}
 
 	function flickEnd() {
 		var movedY = parseInt(target.getBoundingClientRect().top),
-				targetHeight = target.clientHeight + headerHeight,
-				time = position.endTime - position.startTime,
-				resultTime = (time < 400) ? 400 / time : 1;
-		inertia = currentY + (parseInt(position.end - position.start) * resultTime);
-
+			targetHeight = target.clientHeight + headerHeight,
+			time = position.endTime - position.startTime,
+			resultTime = (time < 400) ? 400 / time : 1,
+			inertia = currentY + (parseInt(position.end - position.start) * resultTime);
 
 		$.addClass(target, SIDE_MENU.CLASS_NAME.TRANSITION);
-
 
 		if (movedY > 0 || inertia > 0) {
 			$.setTranslate(target, 0, 0, 'id');
